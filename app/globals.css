@@ -376,6 +376,58 @@ body {
 }
 .task-list a { color: var(--gold-ink); font-weight: 600; }
 
+/* ─── Obrigação (wizard) steps ─── */
+.obrigacao-step {
+  border: 1px solid var(--paper-edge);
+  border-radius: 8px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.obrigacao-step.done { border-color: var(--green); }
+.obrigacao-step-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(0,0,0,0.02);
+}
+.obrigacao-step.done .obrigacao-step-header { background: var(--green-bg); }
+.obrigacao-step-num {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--gold-ink);
+  color: #fff;
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.obrigacao-step.done .obrigacao-step-num { background: var(--green); }
+.obrigacao-step-header strong { flex: 1; font-size: 15px; }
+.obrigacao-step-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.obrigacao-step-toggle input {
+  width: 16px; height: 16px;
+  accent-color: var(--green);
+}
+.obrigacao-step-body {
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.obrigacao-step-body .steps { margin-top: 10px; }
+
 /* ─── Misc ─── */
 .text-muted { color: var(--text-muted); font-size: 13.5px; }
 .text-muted.small { font-size: 12px; margin-top: 14px; }
