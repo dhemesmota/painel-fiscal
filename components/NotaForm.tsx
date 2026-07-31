@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useTransition } from 'react';
+import { useRef, useState, useTransition } from 'react';
 import { addNota, removeNota } from '@/app/painel/actions';
 import { fmt, fmtDateBR } from '@/lib/simplesNacional';
 import type { NotaFiscal } from '@/lib/types';
@@ -12,18 +12,31 @@ interface Props {
 export function NotaForm({ mes, notas }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [pending, startTransition] = useTransition();
+  const [error, setError] = useState('');
 
   const total = notas.reduce((s, n) => s + Number(n.valor), 0);
 
   function handleAdd(formData: FormData) {
+    setError('');
     startTransition(async () => {
-      await addNota(formData);
-      formRef.current?.reset();
+      try {
+        await addNota(formData);
+        formRef.current?.reset();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Erro ao lançar a nota.');
+      }
     });
   }
 
   function handleRemove(id: string) {
-    startTransition(() => removeNota(id));
+    setError('');
+    startTransition(async () => {
+      try {
+        await removeNota(id);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Erro ao remover a nota.');
+      }
+    });
   }
 
   return (
@@ -81,6 +94,7 @@ export function NotaForm({ mes, notas }: Props) {
             <input type="text" name="descricao" placeholder="ex: Manutenção de sistema" />
           </label>
         </div>
+        {error && <p className="warn">{error}</p>}
         <button type="submit" className="btn" disabled={pending}>
           {pending ? 'Lançando…' : 'Lançar nota'}
         </button>

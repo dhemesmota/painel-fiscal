@@ -35,7 +35,7 @@ export default async function PainelPage({
   const revenue = monthRevenues[mes] || 0;
   const { rbt12, active } = computeRBT12(monthRevenues, mes, empresaRes.data?.data_abertura);
   const calc = calcImposto(revenue, rbt12, active);
-  const venc = vencimentoDAS(mes);
+  const venc = await vencimentoDAS(mes);
   const chk = checklistRes.data || { nf: false, pgdas: false, pago: false };
   const allDone = chk.nf && chk.pgdas && chk.pago;
 

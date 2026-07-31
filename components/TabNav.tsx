@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 const TABS = [
   { label: 'Painel',        href: '/painel' },
   { label: 'Notas Fiscais', href: '/painel/notas' },
+  { label: 'Importar',      href: '/painel/importar' },
   { label: 'Imposto',       href: '/painel/imposto' },
   { label: 'Calendário',    href: '/painel/calendario' },
   { label: 'Guia',          href: '/painel/guia' },

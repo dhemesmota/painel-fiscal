@@ -11,20 +11,29 @@ interface Props {
 
 export function ChecklistClient({ mes, initial, vencDate }: Props) {
   const [state, setState] = useState(initial);
+  const [error, setError] = useState('');
   const [, startTransition] = useTransition();
   const venc = new Date(vencDate);
   const dleft = daysUntil(venc);
 
   function toggle(field: 'nf' | 'pgdas' | 'pago') {
     const newVal = !state[field];
+    const prevState = state;
     setState(prev => ({ ...prev, [field]: newVal }));
-    startTransition(() => {
-      toggleCheck(mes, field, newVal);
+    setError('');
+    startTransition(async () => {
+      try {
+        await toggleCheck(mes, field, newVal);
+      } catch (e) {
+        setState(prevState);
+        setError(e instanceof Error ? e.message : 'Erro ao salvar. Tente novamente.');
+      }
     });
   }
 
   return (
     <>
+      {error && <p className="warn">{error}</p>}
       <div className="check-row">
         <input type="checkbox" checked={state.nf} onChange={() => toggle('nf')} />
         <div>

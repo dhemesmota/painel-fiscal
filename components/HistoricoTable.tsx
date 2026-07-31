@@ -1,5 +1,5 @@
 'use client';
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { setHistorico } from '@/app/painel/actions';
 import { monthLabelShort } from '@/lib/simplesNacional';
 
@@ -16,10 +16,21 @@ interface Props {
 
 export function HistoricoTable({ rows }: Props) {
   const [, startTransition] = useTransition();
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   function handleChange(mes: string, value: string) {
     const num = parseFloat(value) || 0;
-    startTransition(() => setHistorico(mes, num));
+    setErrors(prev => ({ ...prev, [mes]: '' }));
+    startTransition(async () => {
+      try {
+        await setHistorico(mes, num);
+      } catch (e) {
+        setErrors(prev => ({
+          ...prev,
+          [mes]: e instanceof Error ? e.message : 'Erro ao salvar.',
+        }));
+      }
+    });
   }
 
   return (
@@ -34,6 +45,7 @@ export function HistoricoTable({ rows }: Props) {
             onBlur={e => handleChange(row.mes, e.target.value)}
           />
           <span className="hist-tag">{row.tag}</span>
+          {errors[row.mes] && <span className="warn">{errors[row.mes]}</span>}
         </div>
       ))}
     </div>

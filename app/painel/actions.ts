@@ -31,13 +31,15 @@ export async function addNota(formData: FormData) {
     valor:        formData.get('valor'),
     descricao:    formData.get('descricao'),
   });
-  await supabase.from('notas_fiscais').insert({ ...parsed, user_id: user.id });
+  const { error } = await supabase.from('notas_fiscais').insert({ ...parsed, user_id: user.id });
+  if (error) throw new Error(error.message);
   revalidatePath('/painel', 'layout');
 }
 
 export async function removeNota(id: string) {
   const { supabase, user } = await getUser();
-  await supabase.from('notas_fiscais').delete().eq('id', id).eq('user_id', user.id);
+  const { error } = await supabase.from('notas_fiscais').delete().eq('id', id).eq('user_id', user.id);
+  if (error) throw new Error(error.message);
   revalidatePath('/painel', 'layout');
 }
 
@@ -45,9 +47,10 @@ export async function removeNota(id: string) {
 
 export async function toggleCheck(mes: string, field: 'nf' | 'pgdas' | 'pago', value: boolean) {
   const { supabase, user } = await getUser();
-  await supabase
+  const { error } = await supabase
     .from('checklist_mensal')
     .upsert({ user_id: user.id, mes, [field]: value, updated_at: new Date().toISOString() }, { onConflict: 'user_id,mes' });
+  if (error) throw new Error(error.message);
   revalidatePath('/painel', 'layout');
 }
 
@@ -55,9 +58,10 @@ export async function toggleCheck(mes: string, field: 'nf' | 'pgdas' | 'pago', v
 
 export async function setHistorico(mes: string, valor: number) {
   const { supabase, user } = await getUser();
-  await supabase
+  const { error } = await supabase
     .from('faturamento_historico')
     .upsert({ user_id: user.id, mes, valor, origem: 'manual', updated_at: new Date().toISOString() }, { onConflict: 'user_id,mes' });
+  if (error) throw new Error(error.message);
   revalidatePath('/painel', 'layout');
 }
 
@@ -92,9 +96,10 @@ export async function saveEmpresa(formData: FormData) {
     telefone:             formData.get('telefone'),
     email:                formData.get('email'),
   });
-  await supabase
+  const { error } = await supabase
     .from('empresas')
     .upsert({ ...parsed, user_id: user.id, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+  if (error) throw new Error(error.message);
   revalidatePath('/painel', 'layout');
 }
 

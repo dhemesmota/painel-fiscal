@@ -22,7 +22,7 @@ export default async function CalendarioPage({
     .maybeSingle();
 
   const chk = chkData || { nf: false, pgdas: false, pago: false };
-  const venc = vencimentoDAS(mes);
+  const venc = await vencimentoDAS(mes);
 
   return (
     <>

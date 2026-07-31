@@ -90,10 +90,31 @@ export function daysUntil(d: Date): number {
   return Math.round((dd.getTime() - today.getTime()) / 86400000);
 }
 
-export function vencimentoDAS(competenciaYm: string): Date {
+function toISODate(d: Date): string {
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+// Feriados nacionais (BrasilAPI, gratuita e sem chave). Não cobre feriados
+// municipais/estaduais — só nacionais, que já são a maioria dos casos em que
+// o dia 20 "escapa" de um fim de semana.
+async function getFeriadosNacionais(ano: number): Promise<Set<string>> {
+  try {
+    const res = await fetch(`https://brasilapi.com.br/api/feriados/v1/${ano}`, {
+      next: { revalidate: 60 * 60 * 24 },
+    });
+    if (!res.ok) return new Set();
+    const data: { date: string }[] = await res.json();
+    return new Set(data.map(f => f.date));
+  } catch {
+    return new Set();
+  }
+}
+
+export async function vencimentoDAS(competenciaYm: string): Promise<Date> {
   const d = ymToDate(addMonths(competenciaYm, 1));
   d.setDate(20);
-  while (d.getDay() === 0 || d.getDay() === 6) {
+  const feriados = await getFeriadosNacionais(d.getFullYear());
+  while (d.getDay() === 0 || d.getDay() === 6 || feriados.has(toISODate(d))) {
     d.setDate(d.getDate() + 1);
   }
   return d;
