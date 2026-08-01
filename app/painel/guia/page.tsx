@@ -27,6 +27,7 @@ export default async function GuiaPage({
   if (readError) {
     return (
       <>
+        <h1 className="page-title">Guia de obrigações</h1>
         <MonthNav />
         <PageError message={readError.message} />
       </>
@@ -50,10 +51,11 @@ export default async function GuiaPage({
 
   return (
     <>
+      <h1 className="page-title">Guia de obrigações</h1>
       <MonthNav />
-      <div className="eyebrow">Obrigações de {monthLabelTitle(mes)} — passo a passo com seus números</div>
-      <p className="text-muted small" style={{ marginBottom: 18 }}>
-        Isso não substitui os sites oficiais — só te leva até o clique certo, já com os valores da sua competência preenchidos.
+      <p className="text-muted" style={{ marginBottom: 18, textAlign: 'center' }}>
+        Passo a passo com os números de {monthLabelTitle(mes)} — isso não substitui os sites oficiais,
+        só te leva até o clique certo, já preenchido.
       </p>
 
       <GuiaWizard
@@ -68,7 +70,7 @@ export default async function GuiaPage({
       />
 
       <div className="rule" />
-      <div className="eyebrow">Manter o CNPJ regular</div>
+      <h2 className="eyebrow">Manter o CNPJ regular</h2>
       <ul className="task-list">
         <li>Mantenha e-mail e endereço atualizados na Receita Federal e na Junta Comercial.</li>
         <li>

@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { MonthNav } from '@/components/MonthNav';
 import { NotaForm } from '@/components/NotaForm';
 import { PageError } from '@/components/PageError';
-import { todayYM, monthLabel } from '@/lib/simplesNacional';
+import { todayYM } from '@/lib/simplesNacional';
 
 export default async function NotasPage({
   searchParams,
@@ -25,6 +25,7 @@ export default async function NotasPage({
   if (error) {
     return (
       <>
+        <h1 className="page-title">Notas fiscais</h1>
         <MonthNav />
         <PageError message={error.message} />
       </>
@@ -33,8 +34,8 @@ export default async function NotasPage({
 
   return (
     <>
+      <h1 className="page-title">Notas fiscais</h1>
       <MonthNav />
-      <div className="eyebrow">Notas fiscais de {monthLabel(mes)}</div>
       <NotaForm mes={mes} notas={notas || []} />
     </>
   );

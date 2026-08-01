@@ -42,7 +42,7 @@ export function ObrigacaoStep({ numero, titulo, mes, field, checked: initial, ch
         </label>
       </div>
       <div className="obrigacao-step-body">{children}</div>
-      {error && <p className="warn">{error}</p>}
+      {error && <p className="warn" role="alert">{error}</p>}
     </div>
   );
 }

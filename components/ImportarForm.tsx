@@ -131,17 +131,13 @@ export function ImportarForm() {
         </button>
       </form>
 
-      {error && <p className="warn">{error}</p>}
-      {saved && (
-        <p style={{ color: 'var(--green)', fontSize: 13, fontWeight: 600, margin: '8px 0' }}>
-          {saved}
-        </p>
-      )}
+      {error && <p className="warn" role="alert">{error}</p>}
+      {saved && <p className="success-text" role="status">{saved}</p>}
 
       {data && (
         <>
           <div className="rule" />
-          <div className="eyebrow">{TIPO_LABEL[data.tipo]} — confira antes de salvar</div>
+          <h2 className="eyebrow">{TIPO_LABEL[data.tipo]} — confira antes de salvar</h2>
 
           {data.tipo === 'nota_fiscal' && (
             <div className="form-grid">

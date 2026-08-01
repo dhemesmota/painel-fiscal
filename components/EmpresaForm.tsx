@@ -228,12 +228,8 @@ export function EmpresaForm({ empresa: e }: Props) {
         12 meses de empresa (regra proporcional do Simples Nacional). Use "Buscar CNPJ" para preencher
         os dados automaticamente a partir da Receita Federal (BrasilAPI) — confira antes de salvar.
       </p>
-      {error && <p className="warn">{error}</p>}
-      {saved && (
-        <p style={{ color: 'var(--green)', fontSize: 13, fontWeight: 600, margin: '8px 0' }}>
-          Dados salvos com sucesso.
-        </p>
-      )}
+      {error && <p className="warn" role="alert">{error}</p>}
+      {saved && <p className="success-text" role="status">Dados salvos com sucesso.</p>}
       <button type="submit" className="btn" disabled={pending}>
         {pending ? 'Salvando…' : 'Salvar dados'}
       </button>

@@ -57,9 +57,10 @@ export function HistoricoTable({ rows }: Props) {
             step="0.01"
             defaultValue={row.val.toFixed(2)}
             onBlur={e => handleBlur(row, e.target.value)}
+            aria-label={`Faturamento de ${monthLabelShort(row.mes)}`}
           />
           <span className="hist-tag">{row.tag}</span>
-          {errors[row.mes] && <span className="warn">{errors[row.mes]}</span>}
+          {errors[row.mes] && <span className="warn" role="alert">{errors[row.mes]}</span>}
         </div>
       ))}
     </div>

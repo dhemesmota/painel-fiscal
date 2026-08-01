@@ -2,6 +2,7 @@
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { addMonths, monthLabel, todayYM } from '@/lib/simplesNacional';
+import { ChevronLeftIcon, ChevronRightIcon } from '@/components/icons';
 
 function MonthNavInner() {
   const router = useRouter();
@@ -18,16 +19,20 @@ function MonthNavInner() {
 
   return (
     <div className="month-nav">
-      <button onClick={() => navigate(-1)}>‹</button>
-      <div className="label">{monthLabel(mes)}</div>
-      <button onClick={() => navigate(1)}>›</button>
+      <button type="button" onClick={() => navigate(-1)} aria-label="Mês anterior">
+        <ChevronLeftIcon width={17} height={17} />
+      </button>
+      <div className="label" aria-live="polite">{monthLabel(mes)}</div>
+      <button type="button" onClick={() => navigate(1)} aria-label="Próximo mês">
+        <ChevronRightIcon width={17} height={17} />
+      </button>
     </div>
   );
 }
 
 export function MonthNav() {
   return (
-    <Suspense fallback={<div className="month-nav"><button>‹</button><div className="label">…</div><button>›</button></div>}>
+    <Suspense fallback={<div className="month-nav"><button aria-hidden="true" /><div className="label">…</div><button aria-hidden="true" /></div>}>
       <MonthNavInner />
     </Suspense>
   );

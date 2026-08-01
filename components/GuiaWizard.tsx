@@ -31,11 +31,12 @@ export function GuiaWizard({
 
   return (
     <>
-      <div className="eyebrow" style={{ marginBottom: 8 }}>Qual é a situação de {monthLabel(mes)}?</div>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+      <h2 className="eyebrow" style={{ marginBottom: 8 }}>Qual é a situação de {monthLabel(mes)}?</h2>
+      <div className="scenario-toggle" role="group" aria-label="Situação do mês">
         <button
           type="button"
           className={`btn${cenario === 'com_nf' ? '' : ' ghost'}`}
+          aria-pressed={cenario === 'com_nf'}
           onClick={() => setCenario('com_nf')}
         >
           Gerei nota fiscal este mês
@@ -43,6 +44,7 @@ export function GuiaWizard({
         <button
           type="button"
           className={`btn${cenario === 'sem_nf' ? '' : ' ghost'}`}
+          aria-pressed={cenario === 'sem_nf'}
           onClick={() => setCenario('sem_nf')}
         >
           Não gerei nota fiscal este mês

@@ -20,7 +20,7 @@ export default async function EmpresaPage({
   if (error) {
     return (
       <>
-        <div className="eyebrow">Dados da empresa</div>
+        <h1 className="page-title">Dados da empresa</h1>
         <PageError message={error.message} />
       </>
     );
@@ -28,10 +28,10 @@ export default async function EmpresaPage({
 
   return (
     <>
-      <div className="eyebrow">Dados da empresa</div>
+      <h1 className="page-title">Dados da empresa</h1>
       {onboarding === '1' && (
-        <div className="data-error" style={{ borderColor: 'var(--gold-ink)', background: 'rgba(139, 101, 42, 0.08)' }}>
-          <strong style={{ color: 'var(--gold-ink)' }}>Comece por aqui.</strong>
+        <div className="data-error notice" role="alert">
+          <strong>Comece por aqui.</strong>
           <p>
             O resto do painel (cálculo do DAS, checklist, guia de obrigações) depende dos dados da sua
             empresa — principalmente CNPJ e data de abertura. Preencha abaixo (ou use &quot;Buscar

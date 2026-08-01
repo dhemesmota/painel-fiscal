@@ -1,9 +1,8 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { TabNav } from '@/components/TabNav';
-import { MastheadPill } from '@/components/MastheadPill';
-import { LogoutButton } from '@/components/LogoutButton';
+import { Sidebar } from '@/components/Sidebar';
+import { PageTransition } from '@/components/PageTransition';
 
 export default async function PainelLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -31,21 +30,12 @@ export default async function PainelLayout({ children }: { children: React.React
   }
 
   return (
-    <div id="app" style={{ minHeight: '100vh' }}>
-      <div className="shell">
-        <header className="masthead">
-          <div>
-            <div className="eyebrow" style={{ color: 'var(--cream-muted)' }}>Painel Fiscal · Simples Nacional</div>
-            <h1>{razaoSocial}</h1>
-            {cnpj && <div className="cnpj">CNPJ {cnpj}</div>}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
-            <MastheadPill />
-            <LogoutButton />
-          </div>
-        </header>
-        <TabNav />
-        <main className="paper">{children}</main>
+    <div className="app-shell">
+      <Sidebar razaoSocial={razaoSocial} cnpj={cnpj} />
+      <div className="app-main">
+        <main id="main-content" className="app-content">
+          <PageTransition>{children}</PageTransition>
+        </main>
         <p className="disclaimer">
           Ferramenta de apoio e estimativa, não é um envio oficial. Os valores definitivos são gerados
           pelo PGDAS-D (Receita Federal) e pelo sistema de NFS-e do seu município. Em dúvidas mais

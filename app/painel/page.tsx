@@ -28,6 +28,7 @@ export default async function PainelPage({
   if (readError) {
     return (
       <>
+        <h1 className="page-title">Painel</h1>
         <MonthNav />
         <PageError message={readError.message} />
       </>
@@ -54,10 +55,12 @@ export default async function PainelPage({
 
   return (
     <>
+      <h1 className="page-title">Painel</h1>
       <MonthNav />
       <div className="painel-grid">
-        <div className={`stamp ${allDone ? 'done' : 'pending'}`}>
-          {allDone ? 'EM DIA' : 'PENDENTE'}
+        <div className={`status-badge ${allDone ? 'done' : 'pending'}`}>
+          <span className="dot" aria-hidden="true" />
+          {allDone ? 'Em dia' : 'Pendente'}
         </div>
         <div>
           <div className="eyebrow">Receita da competência</div>
@@ -70,7 +73,7 @@ export default async function PainelPage({
       </div>
 
       <div className="rule" />
-      <div className="eyebrow">Obrigações do mês</div>
+      <h2 className="eyebrow">Obrigações do mês</h2>
       <ul className="task-list">
         <li>{chk.nf ? '✓' : '○'} Notas fiscais emitidas</li>
         <li>{chk.pgdas ? '✓' : '○'} PGDAS-D enviado</li>
@@ -81,7 +84,7 @@ export default async function PainelPage({
       </Link>
 
       <div className="rule" />
-      <div className="eyebrow">Estimativa do imposto (Anexo III)</div>
+      <h2 className="eyebrow">Estimativa do imposto (Anexo III)</h2>
       {calc.erro ? (
         <p>Receita acumulada acima do limite do Simples Nacional. Procure um contador para orientação.</p>
       ) : (

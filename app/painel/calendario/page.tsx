@@ -15,8 +15,9 @@ export default async function CalendarioPage({
 
   return (
     <>
+      <h1 className="page-title">Calendário</h1>
       <MonthNav />
-      <div className="eyebrow">Obrigações de {monthLabel(mes)}</div>
+      <h2 className="eyebrow">Obrigações de {monthLabel(mes)}</h2>
       <ul className="task-list">
         <li>
           <strong>Emitir as notas fiscais</strong> dos serviços prestados no mês, no portal da NFS-e do DF.
@@ -34,7 +35,7 @@ export default async function CalendarioPage({
       </Link>
 
       <div className="rule" />
-      <div className="eyebrow">Obrigações anuais</div>
+      <h2 className="eyebrow">Obrigações anuais</h2>
       <ul className="task-list">
         <li>
           <strong>DEFIS</strong> — declaração anual do Simples Nacional, até 31 de março.

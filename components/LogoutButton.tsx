@@ -1,6 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { LogOutIcon } from '@/components/icons';
 
 export function LogoutButton() {
   const router = useRouter();
@@ -12,10 +13,8 @@ export function LogoutButton() {
   }
 
   return (
-    <button
-      onClick={handleLogout}
-      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--cream-muted)', fontFamily: 'Inter', fontSize: 12, padding: 0 }}
-    >
+    <button type="button" onClick={handleLogout} className="logout-link">
+      <LogOutIcon width={15} height={15} />
       Sair
     </button>
   );

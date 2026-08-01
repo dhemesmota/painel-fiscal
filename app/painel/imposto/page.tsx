@@ -29,6 +29,7 @@ export default async function ImpostoPage({
   if (readError) {
     return (
       <>
+        <h1 className="page-title">Imposto</h1>
         <MonthNav />
         <PageError message={readError.message} />
       </>
@@ -62,16 +63,17 @@ export default async function ImpostoPage({
 
   return (
     <>
+      <h1 className="page-title">Imposto</h1>
       <MonthNav />
-      <div className="eyebrow">Histórico de faturamento (para calcular o RBT12)</div>
+      <h2 className="eyebrow">Histórico de faturamento (para calcular o RBT12)</h2>
       <p className="text-muted">
-        Valores marcados "das notas" vêm da aba Notas Fiscais. Você pode sobrescrever qualquer mês
-        manualmente — útil para registrar meses anteriores a este painel.
+        Valores marcados &quot;das notas&quot; vêm da aba Notas Fiscais. Você pode sobrescrever qualquer
+        mês manualmente — útil para registrar meses anteriores a este painel.
       </p>
       <HistoricoTable rows={rows} />
 
       <div className="rule" />
-      <div className="eyebrow">Cálculo do DAS — {monthLabelShort(mes).toUpperCase()}</div>
+      <h2 className="eyebrow">Cálculo do DAS — {monthLabelShort(mes).toUpperCase()}</h2>
       {calc.erro ? (
         <p>Receita acumulada acima de R$ 4,8 milhões. Procure um contador.</p>
       ) : (

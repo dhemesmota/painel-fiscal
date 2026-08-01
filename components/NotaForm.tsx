@@ -2,6 +2,7 @@
 import { useRef, useState, useTransition } from 'react';
 import { addNota, removeNota } from '@/app/painel/actions';
 import { fmt, fmtDateBR } from '@/lib/simplesNacional';
+import { TrashIcon } from '@/components/icons';
 import type { NotaFiscal } from '@/lib/types';
 
 interface Props {
@@ -55,11 +56,13 @@ export function NotaForm({ mes, notas }: Props) {
             <div className="nota-valor">
               {fmt(n.valor)}
               <button
+                type="button"
                 className="icon-btn"
                 onClick={() => handleRemove(n.id, n.numero)}
                 disabled={pending}
+                aria-label={`Remover nota ${n.numero || ''}`}
               >
-                ✕
+                <TrashIcon width={14} height={14} />
               </button>
             </div>
           </div>
@@ -69,10 +72,10 @@ export function NotaForm({ mes, notas }: Props) {
         <span>Total do mês</span>
         <strong>{fmt(total)}</strong>
       </div>
-      {notas.length >= 2 && <p className="warn">Você já tem 2 notas neste mês.</p>}
+      {notas.length >= 2 && <p className="warn" role="alert">Você já tem 2 notas neste mês.</p>}
 
       <div className="rule" />
-      <div className="eyebrow">Lançar nova nota</div>
+      <h2 className="eyebrow">Lançar nova nota</h2>
       <form ref={formRef} action={handleAdd}>
         <div className="form-grid">
           <label>
@@ -96,7 +99,7 @@ export function NotaForm({ mes, notas }: Props) {
             <input type="text" name="descricao" placeholder="ex: Manutenção de sistema" />
           </label>
         </div>
-        {error && <p className="warn">{error}</p>}
+        {error && <p className="warn" role="alert">{error}</p>}
         <button type="submit" className="btn" disabled={pending}>
           {pending ? 'Lançando…' : 'Lançar nota'}
         </button>

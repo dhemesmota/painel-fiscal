@@ -1,6 +1,6 @@
 export function PageError({ message }: { message?: string }) {
   return (
-    <div className="data-error">
+    <div className="data-error" role="alert">
       <strong>Não foi possível carregar seus dados agora.</strong>
       <p>
         {message ? `Detalhe: ${message}. ` : ''}
