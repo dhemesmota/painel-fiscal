@@ -90,8 +90,21 @@ export function daysUntil(d: Date): number {
   return Math.round((dd.getTime() - today.getTime()) / 86400000);
 }
 
-function toISODate(d: Date): string {
+export function toISODate(d: Date): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+// Constrói um Date local a partir de uma string 'YYYY-MM-DD' (com ou sem
+// horário) SEM passar por new Date(string), que o JS interpreta como UTC e
+// depois lê com getters locais — isso desloca o dia em até 1 unidade sempre
+// que o processo que lê roda num fuso diferente do que escreveu (ex.:
+// servidor em UTC na Vercel vs. navegador em America/Sao_Paulo). Usar para
+// qualquer data-calendário (data_abertura, vencimento do DAS) que precise
+// atravessar servidor → cliente ou banco → servidor mantendo o mesmo dia.
+export function parseDateOnly(iso: string): Date {
+  const [y, m, d] = iso.split('T')[0].split('-').map(Number);
+  if (!y || !m || !d) return new Date(NaN);
+  return new Date(y, m - 1, d);
 }
 
 // Feriados nacionais (BrasilAPI, gratuita e sem chave). Não cobre feriados
@@ -195,7 +208,7 @@ export function computeRBT12(
 
   let startYm: string | undefined;
   if (dataAbertura) {
-    const d = new Date(dataAbertura);
+    const d = parseDateOnly(dataAbertura);
     if (!isNaN(d.getTime())) startYm = dateToYM(d);
   }
   if (!startYm) {

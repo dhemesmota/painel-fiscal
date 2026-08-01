@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { MonthNav } from '@/components/MonthNav';
 import { HistoricoTable } from '@/components/HistoricoTable';
+import { PageError } from '@/components/PageError';
 import {
   todayYM, addMonths, computeRBT12, calcImposto,
   fmt, pct, FAIXAS,
@@ -23,6 +24,16 @@ export default async function ImpostoPage({
     supabase.from('faturamento_historico').select('mes, valor, origem').eq('user_id', user!.id),
     supabase.from('empresas').select('data_abertura').eq('user_id', user!.id).maybeSingle(),
   ]);
+
+  const readError = notasRes.error || historicoRes.error || empresaRes.error;
+  if (readError) {
+    return (
+      <>
+        <MonthNav />
+        <PageError message={readError.message} />
+      </>
+    );
+  }
 
   const monthRevenues: Record<string, number> = {};
   (notasRes.data || []).forEach(n => {

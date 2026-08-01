@@ -1,7 +1,9 @@
 import { createClient } from '@/lib/supabase/server';
 import { MonthNav } from '@/components/MonthNav';
 import { GuiaWizard } from '@/components/GuiaWizard';
-import { todayYM, computeRBT12, calcImposto, vencimentoDAS, monthLabelTitle } from '@/lib/simplesNacional';
+import { PageError } from '@/components/PageError';
+import { URLS } from '@/lib/obrigacoes';
+import { todayYM, computeRBT12, calcImposto, vencimentoDAS, monthLabelTitle, toISODate } from '@/lib/simplesNacional';
 
 export default async function GuiaPage({
   searchParams,
@@ -20,6 +22,16 @@ export default async function GuiaPage({
     supabase.from('checklist_mensal').select('nf, pgdas, pago').eq('user_id', user!.id).eq('mes', mes).maybeSingle(),
     supabase.from('empresas').select('data_abertura, inscricao_municipal').eq('user_id', user!.id).maybeSingle(),
   ]);
+
+  const readError = notasRes.error || historicoRes.error || checklistRes.error || empresaRes.error;
+  if (readError) {
+    return (
+      <>
+        <MonthNav />
+        <PageError message={readError.message} />
+      </>
+    );
+  }
 
   const monthRevenues: Record<string, number> = {};
   (notasRes.data || []).forEach(n => {
@@ -50,7 +62,7 @@ export default async function GuiaPage({
         revenue={revenue}
         calcErro={calc.erro}
         calcTotal={calc.erro ? 0 : calc.total}
-        vencIso={venc.toISOString()}
+        vencIso={toISODate(venc)}
         chk={chk}
         inscricaoMunicipal={empresaRes.data?.inscricao_municipal ?? null}
       />
@@ -66,7 +78,7 @@ export default async function GuiaPage({
         <li>
           Para decisões fora do dia a dia (contratar funcionário, distribuir lucros, mudar de
           atividade), vale consultar um contador ou o{' '}
-          <a href="https://www.sebrae.com.br/" target="_blank" rel="noreferrer">
+          <a href={URLS.sebrae} target="_blank" rel="noreferrer">
             Sebrae
           </a>
           , que orienta pequenas empresas gratuitamente.

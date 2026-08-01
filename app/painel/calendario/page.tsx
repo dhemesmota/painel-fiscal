@@ -1,7 +1,9 @@
 import { createClient } from '@/lib/supabase/server';
 import { MonthNav } from '@/components/MonthNav';
 import { ChecklistClient } from '@/components/ChecklistClient';
-import { todayYM, vencimentoDAS, fmtDate, monthLabel } from '@/lib/simplesNacional';
+import { PageError } from '@/components/PageError';
+import { DEFIS_AVISO_PRORROGACAO } from '@/lib/obrigacoes';
+import { todayYM, vencimentoDAS, fmtDate, monthLabel, toISODate } from '@/lib/simplesNacional';
 
 export default async function CalendarioPage({
   searchParams,
@@ -14,12 +16,21 @@ export default async function CalendarioPage({
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const { data: chkData } = await supabase
+  const { data: chkData, error: chkError } = await supabase
     .from('checklist_mensal')
     .select('nf, pgdas, pago')
     .eq('user_id', user!.id)
     .eq('mes', mes)
     .maybeSingle();
+
+  if (chkError) {
+    return (
+      <>
+        <MonthNav />
+        <PageError message={chkError.message} />
+      </>
+    );
+  }
 
   const chk = chkData || { nf: false, pgdas: false, pago: false };
   const venc = await vencimentoDAS(mes);
@@ -28,7 +39,7 @@ export default async function CalendarioPage({
     <>
       <MonthNav />
       <div className="eyebrow">Obrigações de {monthLabel(mes)}</div>
-      <ChecklistClient mes={mes} initial={chk} vencDate={venc.toISOString()} />
+      <ChecklistClient mes={mes} initial={chk} vencDate={toISODate(venc)} />
 
       <div style={{ marginTop: 20 }}>
         <ul className="task-list">
@@ -50,6 +61,7 @@ export default async function CalendarioPage({
       <ul className="task-list">
         <li>
           <strong>DEFIS</strong> — declaração anual do Simples Nacional, até 31 de março.
+          <span className="text-muted small" style={{ display: 'block' }}>{DEFIS_AVISO_PRORROGACAO}</span>
         </li>
         <li>
           <strong>Livro Caixa</strong> — manter o registro de entradas e saídas atualizado (substitui

@@ -432,6 +432,15 @@ body {
 .text-muted { color: var(--text-muted); font-size: 13.5px; }
 .text-muted.small { font-size: 12px; margin-top: 14px; }
 .warn { color: var(--rust); font-size: 13px; font-weight: 600; margin: 8px 0 0; }
+.data-error {
+  border: 1px solid var(--rust);
+  background: rgba(177, 73, 46, 0.08);
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin: 12px 0;
+}
+.data-error strong { color: var(--rust); display: block; margin-bottom: 6px; }
+.data-error p { font-size: 13.5px; line-height: 1.5; margin: 0; }
 .disclaimer {
   color: var(--cream-muted);
   font-size: 11.5px;

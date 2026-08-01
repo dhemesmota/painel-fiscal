@@ -1,19 +1,19 @@
 'use client';
 import { useState, useTransition } from 'react';
 import { toggleCheck } from '@/app/painel/actions';
-import { fmtDate, daysUntil } from '@/lib/simplesNacional';
+import { fmtDate, daysUntil, parseDateOnly } from '@/lib/simplesNacional';
 
 interface Props {
   mes: string;
   initial: { nf: boolean; pgdas: boolean; pago: boolean };
-  vencDate: string; // ISO string of the vencimento date
+  vencDate: string; // 'YYYY-MM-DD' — data-calendário, sem horário/fuso
 }
 
 export function ChecklistClient({ mes, initial, vencDate }: Props) {
   const [state, setState] = useState(initial);
   const [error, setError] = useState('');
   const [, startTransition] = useTransition();
-  const venc = new Date(vencDate);
+  const venc = parseDateOnly(vencDate);
   const dleft = daysUntil(venc);
 
   function toggle(field: 'nf' | 'pgdas' | 'pago') {

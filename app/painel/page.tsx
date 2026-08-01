@@ -1,8 +1,9 @@
 import { createClient } from '@/lib/supabase/server';
 import { MonthNav } from '@/components/MonthNav';
 import { ChecklistClient } from '@/components/ChecklistClient';
+import { PageError } from '@/components/PageError';
 import {
-  todayYM, computeRBT12, calcImposto, vencimentoDAS, fmt, pct,
+  todayYM, computeRBT12, calcImposto, vencimentoDAS, fmt, pct, toISODate,
 } from '@/lib/simplesNacional';
 
 export default async function PainelPage({
@@ -22,6 +23,16 @@ export default async function PainelPage({
     supabase.from('checklist_mensal').select('nf, pgdas, pago').eq('user_id', user!.id).eq('mes', mes).maybeSingle(),
     supabase.from('empresas').select('data_abertura').eq('user_id', user!.id).maybeSingle(),
   ]);
+
+  const readError = notasRes.error || historicoRes.error || checklistRes.error || empresaRes.error;
+  if (readError) {
+    return (
+      <>
+        <MonthNav />
+        <PageError message={readError.message} />
+      </>
+    );
+  }
 
   // Build revenue map: historico overrides notas
   const monthRevenues: Record<string, number> = {};
@@ -60,7 +71,7 @@ export default async function PainelPage({
 
       <div className="rule" />
       <div className="eyebrow">Checklist do mês</div>
-      <ChecklistClient mes={mes} initial={chk} vencDate={venc.toISOString()} />
+      <ChecklistClient mes={mes} initial={chk} vencDate={toISODate(venc)} />
 
       <div className="rule" />
       <div className="eyebrow">Estimativa do imposto (Anexo III)</div>

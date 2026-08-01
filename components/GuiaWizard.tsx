@@ -1,7 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { ObrigacaoStep } from '@/components/ObrigacaoStep';
-import { fmt, fmtDate, monthLabel, monthLabelTitle } from '@/lib/simplesNacional';
+import { URLS } from '@/lib/obrigacoes';
+import { fmt, fmtDate, monthLabel, monthLabelTitle, parseDateOnly } from '@/lib/simplesNacional';
 
 interface Nota {
   numero: string | null;
@@ -15,7 +16,7 @@ interface Props {
   revenue: number;
   calcErro: boolean;
   calcTotal: number;
-  vencIso: string;
+  vencIso: string; // 'YYYY-MM-DD' — data-calendário, sem horário/fuso
   chk: { nf: boolean; pgdas: boolean; pago: boolean };
   inscricaoMunicipal: string | null;
 }
@@ -26,7 +27,7 @@ export function GuiaWizard({
   mes, notasMes, revenue, calcErro, calcTotal, vencIso, chk, inscricaoMunicipal,
 }: Props) {
   const [cenario, setCenario] = useState<Cenario>(notasMes.length > 0 ? 'com_nf' : 'sem_nf');
-  const venc = new Date(vencIso);
+  const venc = parseDateOnly(vencIso);
 
   return (
     <>
@@ -73,7 +74,7 @@ export function GuiaWizard({
             <ol className="steps">
               <li>
                 Acesse{' '}
-                <a href="https://iss.fazenda.df.gov.br/online/" target="_blank" rel="noreferrer">
+                <a href={URLS.nfseDF} target="_blank" rel="noreferrer">
                   iss.fazenda.df.gov.br/online
                 </a>{' '}
                 e entre com certificado digital ou conta gov.br.
@@ -99,7 +100,7 @@ export function GuiaWizard({
             <ol className="steps">
               <li>
                 Acesse o{' '}
-                <a href="https://www8.receita.fazenda.gov.br/SimplesNacional/" target="_blank" rel="noreferrer">
+                <a href={URLS.simplesPortal} target="_blank" rel="noreferrer">
                   Portal do Simples Nacional
                 </a>{' '}
                 e entre em &quot;PGDAS-D e DEFIS&quot;.
@@ -149,7 +150,7 @@ export function GuiaWizard({
             <ol className="steps">
               <li>
                 Acesse o{' '}
-                <a href="https://www8.receita.fazenda.gov.br/SimplesNacional/" target="_blank" rel="noreferrer">
+                <a href={URLS.simplesPortal} target="_blank" rel="noreferrer">
                   Portal do Simples Nacional
                 </a>{' '}
                 e entre em &quot;PGDAS-D e DEFIS&quot;.

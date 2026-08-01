@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { MonthNav } from '@/components/MonthNav';
 import { NotaForm } from '@/components/NotaForm';
+import { PageError } from '@/components/PageError';
 import { todayYM, monthLabel } from '@/lib/simplesNacional';
 
 export default async function NotasPage({
@@ -14,12 +15,21 @@ export default async function NotasPage({
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const { data: notas } = await supabase
+  const { data: notas, error } = await supabase
     .from('notas_fiscais')
     .select('*')
     .eq('user_id', user!.id)
     .eq('mes', mes)
     .order('data_emissao');
+
+  if (error) {
+    return (
+      <>
+        <MonthNav />
+        <PageError message={error.message} />
+      </>
+    );
+  }
 
   return (
     <>
