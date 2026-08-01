@@ -261,8 +261,10 @@ button { font-family: inherit; }
 
 .mobile-topbar {
   display: none;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 30;
   align-items: center;
   gap: 12px;
@@ -325,6 +327,8 @@ button { font-family: inherit; }
 @media (max-width: 899px) {
   .sidebar { display: none; }
   .mobile-topbar { display: flex; }
+  /* Compensa a topbar fixa (~61px) pra conteúdo não nascer escondido atrás dela. */
+  .app-main { padding-top: 61px; }
   .app-content { padding: 24px 16px 20px; }
 }
 
