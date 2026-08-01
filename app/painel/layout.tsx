@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { TabNav } from '@/components/TabNav';
@@ -9,14 +10,25 @@ export default async function PainelLayout({ children }: { children: React.React
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
-  const { data: empresa } = await supabase
+  const { data: empresa, error: empresaError } = await supabase
     .from('empresas')
     .select('razao_social, cnpj')
     .eq('user_id', user.id)
-    .single();
+    .maybeSingle();
 
   const razaoSocial = empresa?.razao_social || 'Minha Empresa';
   const cnpj = empresa?.cnpj || '';
+
+  // Sem empresa cadastrada, o resto do painel não tem o que mostrar (RBT12,
+  // DAS, notas — tudo depende de data_abertura/CNPJ). Manda direto pro
+  // cadastro em vez de deixar o usuário navegar por abas vazias/erradas.
+  // Se a leitura falhou (empresaError), não redireciona — evita trancar o
+  // usuário fora dos próprios dados por causa de uma falha transitória.
+  const pathname = (await headers()).get('x-pathname') || '';
+  const cadastroIncompleto = !empresaError && !empresa?.razao_social;
+  if (cadastroIncompleto && pathname !== '/painel/empresa') {
+    redirect('/painel/empresa?onboarding=1');
+  }
 
   return (
     <div id="app" style={{ minHeight: '100vh' }}>

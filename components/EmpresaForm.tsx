@@ -118,11 +118,12 @@ export function EmpresaForm({ empresa: e }: Props) {
     <form action={handleSubmit}>
       <div className="form-grid">
         <label>
-          Razão social
+          Razão social *
           <input
             name="razao_social"
             value={form.razao_social}
             onChange={ev => setField('razao_social', ev.target.value)}
+            required
           />
         </label>
         <label>
@@ -134,13 +135,14 @@ export function EmpresaForm({ empresa: e }: Props) {
           />
         </label>
         <label>
-          CNPJ
+          CNPJ *
           <div style={{ display: 'flex', gap: 8 }}>
             <input
               name="cnpj"
               value={form.cnpj}
               onChange={ev => setField('cnpj', ev.target.value)}
               style={{ flex: 1 }}
+              required
             />
             <button
               type="button"
@@ -222,9 +224,9 @@ export function EmpresaForm({ empresa: e }: Props) {
         </label>
       </div>
       <p className="text-muted small">
-        A data de abertura ajuda a calcular o RBT12 corretamente nos primeiros 12 meses de empresa
-        (regra proporcional do Simples Nacional). Use "Buscar CNPJ" para preencher os dados
-        automaticamente a partir da Receita Federal (BrasilAPI) — confira antes de salvar.
+        * Campos obrigatórios. A data de abertura ajuda a calcular o RBT12 corretamente nos primeiros
+        12 meses de empresa (regra proporcional do Simples Nacional). Use "Buscar CNPJ" para preencher
+        os dados automaticamente a partir da Receita Federal (BrasilAPI) — confira antes de salvar.
       </p>
       {error && <p className="warn">{error}</p>}
       {saved && (

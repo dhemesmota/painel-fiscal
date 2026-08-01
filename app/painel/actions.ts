@@ -68,9 +68,9 @@ export async function setHistorico(mes: string, valor: number) {
 // ─── Empresa ─────────────────────────────────────────────────────────────────
 
 const empresaSchema = z.object({
-  razao_social:        z.string(),
+  razao_social:        z.string().trim().min(1, 'Informe a razão social.'),
   nome_fantasia:       z.string(),
-  cnpj:                z.string(),
+  cnpj:                z.string().refine(v => v.replace(/\D/g, '').length === 14, 'Informe um CNPJ válido (14 dígitos).'),
   inscricao_municipal: z.string(),
   municipio_incidencia:z.string(),
   aliquota_iss:        z.coerce.number(),
@@ -83,19 +83,25 @@ const empresaSchema = z.object({
 
 export async function saveEmpresa(formData: FormData) {
   const { supabase, user } = await getUser();
-  const parsed = empresaSchema.parse({
-    razao_social:         formData.get('razao_social'),
-    nome_fantasia:        formData.get('nome_fantasia'),
-    cnpj:                 formData.get('cnpj'),
-    inscricao_municipal:  formData.get('inscricao_municipal'),
-    municipio_incidencia: formData.get('municipio_incidencia'),
-    aliquota_iss:         formData.get('aliquota_iss'),
-    atividade:            formData.get('atividade'),
-    data_abertura:        formData.get('data_abertura') || undefined,
-    endereco:             formData.get('endereco'),
-    telefone:             formData.get('telefone'),
-    email:                formData.get('email'),
-  });
+  let parsed;
+  try {
+    parsed = empresaSchema.parse({
+      razao_social:         formData.get('razao_social'),
+      nome_fantasia:        formData.get('nome_fantasia'),
+      cnpj:                 formData.get('cnpj'),
+      inscricao_municipal:  formData.get('inscricao_municipal'),
+      municipio_incidencia: formData.get('municipio_incidencia'),
+      aliquota_iss:         formData.get('aliquota_iss'),
+      atividade:            formData.get('atividade'),
+      data_abertura:        formData.get('data_abertura') || undefined,
+      endereco:             formData.get('endereco'),
+      telefone:             formData.get('telefone'),
+      email:                formData.get('email'),
+    });
+  } catch (err) {
+    if (err instanceof z.ZodError) throw new Error(err.issues[0]?.message || 'Dados inválidos.');
+    throw err;
+  }
   const { error } = await supabase
     .from('empresas')
     .upsert({ ...parsed, user_id: user.id, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });

@@ -28,7 +28,9 @@ export function NotaForm({ mes, notas }: Props) {
     });
   }
 
-  function handleRemove(id: string) {
+  function handleRemove(id: string, numero: string | null) {
+    const label = numero ? `a nota ${numero}` : 'esta nota';
+    if (!window.confirm(`Remover ${label}? Isso não pode ser desfeito.`)) return;
     setError('');
     startTransition(async () => {
       try {
@@ -54,7 +56,7 @@ export function NotaForm({ mes, notas }: Props) {
               {fmt(n.valor)}
               <button
                 className="icon-btn"
-                onClick={() => handleRemove(n.id)}
+                onClick={() => handleRemove(n.id, n.numero)}
                 disabled={pending}
               >
                 ✕

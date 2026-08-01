@@ -1,9 +1,9 @@
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { MonthNav } from '@/components/MonthNav';
-import { ChecklistClient } from '@/components/ChecklistClient';
 import { PageError } from '@/components/PageError';
 import {
-  todayYM, computeRBT12, calcImposto, vencimentoDAS, fmt, pct, toISODate,
+  todayYM, computeRBT12, calcImposto, vencimentoDAS, fmt, pct, fmtDate,
 } from '@/lib/simplesNacional';
 
 export default async function PainelPage({
@@ -70,8 +70,15 @@ export default async function PainelPage({
       </div>
 
       <div className="rule" />
-      <div className="eyebrow">Checklist do mês</div>
-      <ChecklistClient mes={mes} initial={chk} vencDate={toISODate(venc)} />
+      <div className="eyebrow">Obrigações do mês</div>
+      <ul className="task-list">
+        <li>{chk.nf ? '✓' : '○'} Notas fiscais emitidas</li>
+        <li>{chk.pgdas ? '✓' : '○'} PGDAS-D enviado</li>
+        <li>{chk.pago ? '✓' : '○'} DAS pago — vencimento {fmtDate(venc)}</li>
+      </ul>
+      <Link href={`/painel/guia?mes=${mes}`} className="btn" style={{ display: 'inline-block', marginTop: 12 }}>
+        {allDone ? 'Ver no Guia' : 'Abrir passo a passo (Guia)'}
+      </Link>
 
       <div className="rule" />
       <div className="eyebrow">Estimativa do imposto (Anexo III)</div>

@@ -1,9 +1,7 @@
-import { createClient } from '@/lib/supabase/server';
+import Link from 'next/link';
 import { MonthNav } from '@/components/MonthNav';
-import { ChecklistClient } from '@/components/ChecklistClient';
-import { PageError } from '@/components/PageError';
 import { DEFIS_AVISO_PRORROGACAO } from '@/lib/obrigacoes';
-import { todayYM, vencimentoDAS, fmtDate, monthLabel, toISODate } from '@/lib/simplesNacional';
+import { todayYM, vencimentoDAS, fmtDate, monthLabel } from '@/lib/simplesNacional';
 
 export default async function CalendarioPage({
   searchParams,
@@ -13,48 +11,27 @@ export default async function CalendarioPage({
   const { mes: mesParam } = await searchParams;
   const mes = mesParam || todayYM();
 
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  const { data: chkData, error: chkError } = await supabase
-    .from('checklist_mensal')
-    .select('nf, pgdas, pago')
-    .eq('user_id', user!.id)
-    .eq('mes', mes)
-    .maybeSingle();
-
-  if (chkError) {
-    return (
-      <>
-        <MonthNav />
-        <PageError message={chkError.message} />
-      </>
-    );
-  }
-
-  const chk = chkData || { nf: false, pgdas: false, pago: false };
   const venc = await vencimentoDAS(mes);
 
   return (
     <>
       <MonthNav />
       <div className="eyebrow">Obrigações de {monthLabel(mes)}</div>
-      <ChecklistClient mes={mes} initial={chk} vencDate={toISODate(venc)} />
-
-      <div style={{ marginTop: 20 }}>
-        <ul className="task-list">
-          <li>
-            <strong>Emitir as notas fiscais</strong> dos serviços prestados no mês, no portal da NFS-e do DF.
-          </li>
-          <li>
-            <strong>Enviar o PGDAS-D</strong> informando a receita do mês — isso gera o DAS.
-            Prazo: {fmtDate(venc)}.
-          </li>
-          <li>
-            <strong>Pagar o DAS</strong> até {fmtDate(venc)} (Pix ou boleto).
-          </li>
-        </ul>
-      </div>
+      <ul className="task-list">
+        <li>
+          <strong>Emitir as notas fiscais</strong> dos serviços prestados no mês, no portal da NFS-e do DF.
+        </li>
+        <li>
+          <strong>Enviar o PGDAS-D</strong> informando a receita do mês — isso gera o DAS.
+          Prazo: {fmtDate(venc)}.
+        </li>
+        <li>
+          <strong>Pagar o DAS</strong> até {fmtDate(venc)} (Pix ou boleto).
+        </li>
+      </ul>
+      <Link href={`/painel/guia?mes=${mes}`} className="btn" style={{ display: 'inline-block', marginTop: 12 }}>
+        Marcar como feito no Guia
+      </Link>
 
       <div className="rule" />
       <div className="eyebrow">Obrigações anuais</div>
